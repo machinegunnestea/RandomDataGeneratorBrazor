@@ -17,9 +17,9 @@
             }
         </MudSelect>
 
-        <MudSlider style="margin-right: 50px;" @bind-Value="errorCount" Min="0" Max="10" Color="Color.Info" Variant="Variant.Filled" >@errorCount.ToString()</MudSlider>
+        <MudSlider style="margin-right: 50px;" @bind-Value="errorCount" Min="0" Max="10" Step="0.5" Color="Color.Info" Variant="Variant.Filled">@errorCount.ToString()</MudSlider>
         
-        <MudNumericField style="margin-right: 50px;" @bind-Value="errorCount" Min="0" Max="1000" Variant="Variant.Outlined" />
+        <MudNumericField style="margin-right: 50px;" @bind-Value="errorCount" Min="0" Max="1000" Format="F1" Step="0.5" Variant="Variant.Outlined" />
         <MudButton style="margin-right: 50px;"  Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateData">Apply changes</MudButton>
 
         <MudTextField style="margin-right: 50px;" @bind-Value="seed" Label="Seed" />
@@ -51,7 +51,7 @@
 @code {
     private string selectedRegion = "USA";
     private int value = 33;
-    private int errorCount = 0;
+    private double errorCount = 0;
     private int seed = 5;
 
     private List<string> regions = new List<string> { "USA", "Poland", "Russia" };

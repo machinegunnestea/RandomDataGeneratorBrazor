@@ -13,6 +13,7 @@ namespace RandomDataBrazor.Controllers
     public class DataGenerator
     {
         Faker<PersonModel> modelFaker;
+
         private readonly Dictionary<string, string[]> regionData = new Dictionary<string, string[]>
         {
             { "USA", new string[] { "en_US", "en" } },
@@ -24,7 +25,7 @@ namespace RandomDataBrazor.Controllers
         {
         }
 
-        public IEnumerable<PersonModel> GeneratePeople(string region, int errorCount, int seed)
+        public IEnumerable<PersonModel> GeneratePeople(string region, double errorCount, int seed)
         {
             var culture = regionData[region];
             var countryCode = regionData[region][1];
@@ -62,10 +63,11 @@ namespace RandomDataBrazor.Controllers
                 .RuleFor(u => u.Address, f => f.Address.StreetAddress());
         }
 
-        private string ApplyErrors(string input, int errorCount, string countryCode)
+        private string ApplyErrors1(string input, double errorCount, string countryCode)
         {
             int length = input.Length;
-            int numErrors = errorCount;
+            double numErrors = Math.Floor(errorCount);
+            double additionalErrorProbability = errorCount - numErrors;
 
             for (int i = 0; i < numErrors; i++)
             {
@@ -100,9 +102,90 @@ namespace RandomDataBrazor.Controllers
                         break;
                 }
             }
+            // Дополнительная ошибка с вероятностью 50%
+            if (additionalErrorProbability > 0 && Randomizer.Seed.NextDouble() < 0.5)
+            {
+                int errorType = Randomizer.Seed.Next(3);
 
+                switch (errorType)
+                {
+                    case 0:
+                        // Удаление символа
+                        if (length > 1)
+                        {
+                            int indexToRemove = Randomizer.Seed.Next(length);
+                            input = input.Remove(indexToRemove, 1);
+                            length--;
+                        }
+                        break;
+                    case 1:
+                        // Добавление случайного символа
+                        int indexToAdd = Randomizer.Seed.Next(length + 1);
+                        char randomChar = GetRandomChar(countryCode);
+                        input = input.Insert(indexToAdd, randomChar.ToString());
+                        length++;
+                        break;
+                    case 2:
+                        // Перестановка двух соседних символов местами
+                        if (length > 1)
+                        {
+                            int indexToSwap = Randomizer.Seed.Next(length - 1);
+                            char temp = input[indexToSwap];
+                            input = input.Remove(indexToSwap, 1).Insert(indexToSwap + 1, temp.ToString());
+                        }
+                        break;
+                }
+            }
             return input;
         }
+        private string ApplyErrors(string input, double errorCount, string countryCode)
+        {
+            int length = input.Length;
+            double numErrors = Math.Floor(errorCount);
+            double additionalErrorProbability = errorCount - numErrors;
+
+            Action applyError = () =>
+                {
+                    int errorType = Randomizer.Seed.Next(3);
+                    int index;
+
+                    switch (errorType)
+                    {
+                        case 0:
+                            if (length > 1)
+                            {
+                                index = GetRandomIndex(length);
+                                input = input.Remove(index, 1);
+                                length--;
+                            }
+                            break;
+                        case 1:
+                            index = GetRandomIndex(length + 1);
+                            char randomChar = GetRandomChar(countryCode);
+                            input = input.Insert(index, randomChar.ToString());
+                            length++;
+                            break;
+                        case 2:
+                            if (length > 1)
+                            {
+                                index = GetRandomIndex(length - 1);
+                                char temp = input[index];
+                                input = input.Remove(index, 1).Insert(index + 1, temp.ToString());
+                            }
+                            break;
+                    }
+                };
+            for (int i = 0; i < numErrors; i++)
+            {
+                applyError();
+            }
+            if (additionalErrorProbability > 0 && additionalErrorProbability >= Randomizer.Seed.NextDouble())
+            {
+                applyError();
+            }
+            return input;
+        }
+        private int GetRandomIndex(int maxIndex) => Randomizer.Seed.Next(maxIndex);
         private char GetRandomChar(string countryCode)
         {
             string characters = GetAlphabetForCountry(countryCode) + "0123456789";
@@ -111,10 +194,6 @@ namespace RandomDataBrazor.Controllers
         }
         private string GetAlphabetForCountry(string countryCode)
         {
-            // Добавьте логику для определения алфавита страны по ее коду
-            // Здесь вы можете использовать вашу существующую логику или внести изменения в зависимости от ваших требований
-
-            // Пример:
             switch (countryCode)
             {
                 case "en_US":

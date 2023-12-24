@@ -657,7 +657,6 @@ D:\Itrans\task5\RandomDataBrazor\RandomDataBrazor\obj\Debug\net7.0\staticwebasse
 D:\Itrans\task5\RandomDataBrazor\RandomDataBrazor\obj\Debug\net7.0\staticwebassets.build.json
 D:\Itrans\task5\RandomDataBrazor\RandomDataBrazor\obj\Debug\net7.0\staticwebassets.development.json
 D:\Itrans\task5\RandomDataBrazor\RandomDataBrazor\obj\Debug\net7.0\scopedcss\Shared\MainLayout.razor.rz.scp.css
-D:\Itrans\task5\RandomDataBrazor\RandomDataBrazor\obj\Debug\net7.0\scopedcss\Shared\NavMenu.razor.rz.scp.css
 D:\Itrans\task5\RandomDataBrazor\RandomDataBrazor\obj\Debug\net7.0\scopedcss\bundle\RandomDataBrazor.styles.css
 D:\Itrans\task5\RandomDataBrazor\RandomDataBrazor\obj\Debug\net7.0\scopedcss\projectbundle\RandomDataBrazor.bundle.scp.css
 D:\Itrans\task5\RandomDataBrazor\RandomDataBrazor\obj\Debug\net7.0\RandomDataBrazor.csproj.CopyComplete
