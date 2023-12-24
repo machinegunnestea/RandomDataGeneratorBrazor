@@ -1,0 +1,74 @@
+﻿@page "/"
+@inject DataGenerator DataGenerator
+@using Microsoft.AspNetCore.Mvc;
+@using MudBlazor
+@using MudBlazor.Services
+@using MudBlazor.Extensions
+@using System.Text;
+
+<h3>Data Generator</h3>
+
+<MudPaper>
+    <div style="display: flex; align-items: center;">
+        <MudSelect style="margin-right: 50px;" T="string" Label="Region" @bind-Value="selectedRegion" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" >
+            @foreach (var region in regions)
+            {
+                <MudSelectItem T="string" value="@region">@region</MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudSlider style="margin-right: 50px;" @bind-Value="errorCount" Min="0" Max="10" Color="Color.Info" Variant="Variant.Filled" >@errorCount.ToString()</MudSlider>
+        
+        <MudNumericField style="margin-right: 50px;" @bind-Value="errorCount" Min="0" Max="1000" Variant="Variant.Outlined" />
+        <MudButton style="margin-right: 50px;"  Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateData">Apply changes</MudButton>
+
+        <MudTextField style="margin-right: 50px;" @bind-Value="seed" Label="Seed" />
+        <MudButton style="margin-right: 50px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="@GenerateRandomSeed">Random seed</MudButton>
+
+
+    </div>
+
+    <div class="my-3 col-12">
+        <MudTable Items="@people" Dense=false Hover=true Bordered=false Striped=true>
+            <HeaderContent>
+                <MudTh>Number</MudTh>
+                <MudTh>Identifier</MudTh>
+                <MudTh>FullName</MudTh>
+                <MudTh>Address</MudTh>
+                <MudTh>Phone</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Number">@context.Number</MudTd>
+                <MudTd DataLabel="Idenifier">@context.Identifier</MudTd>
+                <MudTd DataLabel="Full Name">@context.FullName</MudTd>
+                <MudTd DataLabel="Adress">@context.Address</MudTd>
+                <MudTd DataLabel="Phone">@context.Phone</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </div>
+</MudPaper>
+
+@code {
+    private string selectedRegion = "USA";
+    private int value = 33;
+    private int errorCount = 0;
+    private int seed = 5;
+
+    private List<string> regions = new List<string> { "USA", "Poland", "Russia" };
+    private List<PersonModel> people = new List<PersonModel>();
+
+    protected override void OnInitialized()
+    {
+        GenerateData();
+    }
+    private void GenerateData()
+    {
+        people = DataGenerator.GeneratePeople(selectedRegion, errorCount, seed).Take(20).ToList();
+    }
+
+    private void GenerateRandomSeed()
+    {
+        seed = new Random().Next(1, 1001); 
+        GenerateData();
+    }
+}
